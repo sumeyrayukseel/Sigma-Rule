@@ -2,6 +2,7 @@ title: NTDS.dit Backup via Wbadmin.EXE
 description: Detects the use of wbadmin.exe to back up the Active Directory database (ntds.dit), which attackers abuse to obtain domain credential hashes offline.
 author: Sümeyra Yüksel
 status: experimental
+references:
     - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
 date: 2026/10/16
 tags:
