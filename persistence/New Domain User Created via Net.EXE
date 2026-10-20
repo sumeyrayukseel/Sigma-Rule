@@ -1,0 +1,34 @@
+title: New Domain User Created via Net.EXE
+status: experimental
+description: Detects the creation of a domain user account via net.exe or net1.exe using the /add and /dom switches. Observed in the Akira intrusion where the actor created backup_DA and backup_EA accounts to establish persistence.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.persistence
+    - attack.t1136.002
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection_img:
+        - Image|endswith:
+              - '\net.exe'
+              - '\net1.exe'
+        - OriginalFileName:
+              - 'net.exe'
+              - 'net1.exe'
+    selection_cli:
+        CommandLine|windash|contains|all:
+            - ' user '
+            - ' /add'
+            - ' /dom'
+    condition: all of selection_*
+fields:
+    - Image
+    - ParentImage
+    - CommandLine
+    - User
+level: medium
