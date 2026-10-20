@@ -1,4 +1,4 @@
-title: SSH Client Connecting to Reverse Proxy Tunneling
+title: SSH Reverse Tunnel Established via Ssh.EXE
 status: experimental
 description: Detects ssh.exe executed with the -R option, which creates a reverse port forward from a remote server back to the internal network. Attackers use this to expose internal services such as RDP to an external host and bypass firewall restrictions. Observed in the Akira intrusion on domain controllers and servers.
 references:
