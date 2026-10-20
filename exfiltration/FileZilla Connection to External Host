@@ -1,0 +1,35 @@
+title: FileZilla Connection to External Host
+status: experimental
+description: Detects FileZilla initiating an outbound network connection to an external (non-private) address. Attackers abuse FileZilla to exfiltrate data over FTP, FTPS or SFTP; observed in the Akira intrusion where tens of gigabytes were sent to an external server over SFTP.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.exfiltration
+    - attack.t1048
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\filezilla.exe'
+            - '\fzsftp.exe'
+        Initiated: 'true'
+    filter_internal_ip:
+        DestinationIp|cidr:
+            - '10.0.0.0/8'
+            - '172.16.0.0/12'
+            - '192.168.0.0/16'
+            - '127.0.0.0/8'
+    condition: selection and not filter_internal_ip
+fields:
+    - Image
+    - User
+    - SourceIp
+    - DestinationIp
+    - DestinationPort
+falsepositives:
+    - Legitimate use of FileZilla by administrators or users for file transfers
+level: medium
