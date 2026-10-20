@@ -1,0 +1,28 @@
+title: SSH Client Connecting to Reverse Proxy Tunneling
+status: experimental
+description: Detects ssh.exe executed with the -R option, which creates a reverse port forward from a remote server back to the internal network. Attackers use this to expose internal services such as RDP to an external host and bypass firewall restrictions. Observed in the Akira intrusion on domain controllers and servers.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.command-and-control
+    - attack.t1572
+    - attack.t1090
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith: '\ssh.exe'
+        - OriginalFileName: 'ssh.exe'
+    selection_cli:
+        CommandLine|contains: ' -R'
+    condition: all of selection_*
+fields:
+    - Image
+    - User
+    - SourceIp
+    - DestinationIp
+    - DestinationPort
+level: high
