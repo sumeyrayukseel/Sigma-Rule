@@ -1,0 +1,38 @@
+title: Mixed-Case Obfuscation of PowerShell or CMD in Command Line
+status: experimental
+description: Detects command lines where powershell.exe or cmd.exe is written with unusual mixed-case spelling (e.g. pOWerShELl.exE), which attackers use to evade case-sensitive detection logic. Observed in the Akira intrusion.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.defense-evasion
+    - attack.t1027.010
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_ps:
+        CommandLine|contains: 'powershell.exe'
+    filter_ps_normal:
+        CommandLine|cased|contains:
+            - 'powershell.exe'
+            - 'PowerShell.exe'
+            - 'Powershell.exe'
+            - 'POWERSHELL.EXE'
+    selection_cmd:
+        CommandLine|contains: 'cmd.exe'
+    filter_cmd_normal:
+        CommandLine|cased|contains:
+            - 'cmd.exe'
+            - 'Cmd.exe'
+            - 'CMD.EXE'
+    condition: (selection_ps and not filter_ps_normal) or (selection_cmd and not filter_cmd_normal)
+fields:
+    - Image
+    - ParentImage
+    - CommandLine
+    - User
+falsepositives:
+    - Scripts or software that write executable names with unconventional capitalization
+level: low
