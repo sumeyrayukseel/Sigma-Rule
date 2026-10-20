@@ -1,0 +1,33 @@
+title: Lsass Dump via Comsvcs.DLL 
+status: experimental
+description: Detects rundll32.exe loading comsvcs.dll and calling the MiniDump export (ordinal 24) with the full argument, a technique used to dump LSASS memory. Observed in the Akira intrusion via the lsassy tool.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection_img:
+        Image|endswith: '\rundll32.exe'
+    selection_dll:
+        CommandLine|contains: 'comsvcs.dll'
+    selection_func:
+        CommandLine|contains:
+            - '#24'
+            - '#+24'
+            - '#+000024'
+            - 'MiniDump'
+    selection_full:
+        CommandLine|contains: 'full'
+    condition: all of selection_*
+fields:
+    - User
+    - Image
+    - CommandLine
+level: high
