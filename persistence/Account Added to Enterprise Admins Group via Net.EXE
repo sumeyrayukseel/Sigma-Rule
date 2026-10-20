@@ -1,0 +1,36 @@
+title: Account Added to Enterprise Admins Group via Net.EXE
+status: experimental
+description: Detects the use of net.exe to add an account to the Enterprise Admins group, which may indicate unauthorized privilege escalation and persistence within an Active Directory forest.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1098.007
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection_img:
+        - Image|endswith:
+              - '\net.exe'
+              - '\net1.exe'
+        - OriginalFileName:
+              - 'net.exe'
+              - 'net1.exe'
+    selection_cli:
+        CommandLine|windash|contains|all:
+            - ' group '
+            - ' enterprise admins '
+            - ' /add'
+            - ' /dom'
+    condition: all of selection_*
+fields:
+    - Image
+    - ParentImage
+    - CommandLine
+    - User
+level: medium
