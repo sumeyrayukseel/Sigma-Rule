@@ -1,0 +1,23 @@
+title: Invoke-ShareFinder Network Share Discovery via PowerShell
+status: experimental
+description: Detects the PowerView function Invoke-ShareFinder in PowerShell script blocks, used to enumerate accessible SMB shares across a domain. Observed on domain controllers in the Akira intrusion.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.discovery
+    - attack.t1135
+logsource:
+    category: ps_script
+    product: windows
+detection:
+    selection:
+        ScriptBlockText|contains: 'Invoke-ShareFinder'
+    condition: selection
+fields:
+    - ScriptBlockText
+    - Path
+falsepositives:
+    - Penetration tests and red team exercises using PowerView
+level: high
