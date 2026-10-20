@@ -1,0 +1,23 @@
+title: DNS Zone Enumeration and Export via PowerShell
+status: experimental
+description: Detects PowerShell cmdlets that enumerate or export DNS server zones, which gives an attacker a map of internal hosts. Observed on a child domain controller in the Akira intrusion.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.discovery
+    - attack.t1018
+logsource:
+    category: ps_script
+    product: windows
+detection:
+    selection:
+        ScriptBlockText|contains: 'Export-DnsServerZone'
+    condition: selection
+fields:
+    - ScriptBlockText
+    - Path
+falsepositives:
+    - DNS administrators backing up or migrating zones
+level: medium
