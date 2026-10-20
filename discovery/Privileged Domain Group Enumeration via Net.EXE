@@ -1,0 +1,40 @@
+title: Privileged Domain Group Enumeration via Net.EXE
+status: experimental
+description: Detects net.exe or net1.exe enumerating members of privileged domain groups such as Domain Admins. Observed repeatedly during the discovery phase of the Akira intrusion.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.discovery
+    - attack.t1069.002
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith:
+              - '\net.exe'
+              - '\net1.exe'
+        - OriginalFileName:
+              - 'net.exe'
+              - 'net1.exe'
+    selection_cli:
+        CommandLine|windash|contains|all:
+            - ' group '
+            - ' -dom'
+    selection_group:
+        CommandLine|contains:
+            - 'domain admins'
+            - 'enterprise admins'
+    filter_modify:
+        CommandLine|windash|contains: ' -add'
+    condition: all of selection_* and not filter_modify
+fields:
+    - Image
+    - ParentImage
+    - CommandLine
+    - User
+falsepositives:
+    - Administrators or audit scripts reviewing privileged group membership
+level: low
