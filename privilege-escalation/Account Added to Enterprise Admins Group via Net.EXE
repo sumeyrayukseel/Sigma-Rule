@@ -25,6 +25,8 @@ detection:
         CommandLine|windash|contains|all:
             - ' group '
             - ' enterprise admins '
+            - 'domain admins'
+            - 'schema admins'
             - ' /add'
             - ' /dom'
     condition: all of selection_*
