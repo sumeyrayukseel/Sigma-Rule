@@ -1,0 +1,29 @@
+title: consent.exe Execution from Unusual Location
+status: experimental
+description: Detects execution of consent.exe from outside its legitimate system directory. Attackers copy the signed consent.exe next to a malicious msimg32.dll to perform DLL side-loading, as seen in the BumbleBee loader.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.defense-evasion
+    - attack.t1574.001
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        Image|endswith: '\consent.exe'
+    filter_legit_path:
+        Image|startswith:
+            - 'C:\Windows\System32\'
+            - 'C:\Windows\SysWOW64\'
+    condition: selection and not filter_legit_path
+fields:
+    - Image
+    - ParentImage
+    - User
+falsepositives:
+    - consent.exe is a signed Windows binary that normally runs only from System32
+level: high
