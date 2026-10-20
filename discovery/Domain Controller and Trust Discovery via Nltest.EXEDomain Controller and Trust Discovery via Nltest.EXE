@@ -1,0 +1,33 @@
+title: Domain Controller and Trust Discovery via Nltest.EXE
+status: experimental
+description: Detects nltest.exe used to enumerate domain controllers and domain trusts. Observed in the Akira intrusion right after the initial AdaptixC2 beacon.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.discovery
+    - attack.t1482
+    - attack.t1018
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith: '\nltest.exe'
+        - OriginalFileName: 'nltestrk.exe'
+    selection_cli:
+        CommandLine|windash|contains:
+            - ' -dclist'
+            - ' -domain_trusts'
+            - ' -all_trusts'
+            - ' -trusted_domains'
+    condition: all of selection_*
+fields:
+    - Image
+    - ParentImage
+    - CommandLine
+    - User
+falsepositives:
+    - Administrators and some management software enumerating domain controllers
+level: medium
