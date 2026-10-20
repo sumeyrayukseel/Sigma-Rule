@@ -1,0 +1,27 @@
+title: RustDesk Service Installed
+status: experimental
+description: Detects the installation of a Windows service whose image path points to RustDesk, a remote access tool abused by threat actors for persistent access. Observed in the Akira intrusion where RustDesk was registered as a service on multiple servers.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.persistence
+    - attack.t1543.003
+    - attack.t1219
+logsource:
+    product: windows
+    service: system
+detection:
+    selection:
+        Provider_Name: 'Service Control Manager'
+        EventID: 7045
+        ImagePath|contains: 'rustdesk'
+    condition: selection
+fields:
+    - ServiceName
+    - ImagePath
+    - AccountName
+falsepositives:
+    - Legitimate IT use of RustDesk for remote support
+level: medium
