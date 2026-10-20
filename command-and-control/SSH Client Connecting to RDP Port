@@ -1,0 +1,30 @@
+title: SSH Client Connecting to RDP Port
+status: experimental
+description: Detects ssh.exe initiating a network connection to port 3389. Attackers use SSH reverse tunnels to expose internal RDP to an external server; observed in the Akira intrusion where ssh.exe bridged connections to the local RDP port.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags:
+    - attack.lateral-movement
+    - attack.command-and-control
+    - attack.t1021.001
+    - attack.t1090
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\ssh.exe'
+        DestinationPort: 3389
+        Initiated: 'true'
+    condition: selection
+fields:
+    - Image
+    - User
+    - SourceIp
+    - DestinationIp
+    - DestinationPort
+falsepositives:
+    - Administrators deliberately tunneling RDP over SSH
+level: high
