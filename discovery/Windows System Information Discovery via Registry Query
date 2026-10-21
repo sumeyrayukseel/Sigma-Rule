@@ -1,0 +1,31 @@
+title: Windows System Information Discovery via Registry Query
+status: experimental
+description: Detects cmd.exe executing reg query commands to retrieve the Windows ProductName or Cryptography MachineGuid registry values, which may indicate system information discovery or host fingerprinting activity.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.discovery
+    - attack.t1012
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith: '\cmd.exe'
+        OriginalFileName: cmd.exe
+    selection_reg:
+        CommandLine|contains: 'reg query'
+    selection_value:
+        CommandLine|contains:
+            - 'ProductName'
+            - 'MachineGuid'
+            - 'Win32_ComputerSystem'
+    condition: all of selection_*
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+level: medium
