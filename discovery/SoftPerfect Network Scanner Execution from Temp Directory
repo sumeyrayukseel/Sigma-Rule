@@ -1,0 +1,24 @@
+title: SoftPerfect Network Scanner Execution from Temp Directory
+status: experimental
+description: Detects execution of netscan.exe from a temporary directory, which may indicate network discovery activity.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith: '\netscan.exe'
+    selection_path:
+        CommandLine|contains: 'C:\temp\netscan.exe'
+    condition: all of selection_*
+fields:
+    - Image
+    - CommandLine
+    - User
+level: low
