@@ -1,0 +1,34 @@
+title: Curl Download to User-Writable Directory
+status: experimental
+description: Detects curl.exe downloading a file from a remote URL into a user-writable directory such as AppData or Temp. Observed in the EtherRAT intrusion where a script used curl to download a portable Node.js runtime into the user's Temp folder.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.command-and-control
+    - attack.t1105
+logsource:
+    category: process_creation
+    product: windows
+    service
+detection:
+    selection_img:
+        - Image|endswith: '\curl.exe'
+        - OriginalFileName: 'curl.exe'
+    selection_url:
+        CommandLine|contains: 'http'
+    selection_path:
+        CommandLine|contains:
+            - '\AppData\'
+            - '\Local\'
+            - '\Temp\'
+    condition: all of selection_*
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+falsepositives:
+    - Software update scripts or developers legitimately downloading files with curl
+level: low
