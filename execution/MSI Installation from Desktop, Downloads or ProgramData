@@ -1,0 +1,35 @@
+title: MSI Installation from Desktop, Downloads or ProgramData
+status: experimental
+description: Detects msiexec.exe installing an MSI package from a user Desktop, Downloads or ProgramData directory. Observed in the EtherRAT intrusion where a malicious MSI masquerading as a Sysinternals tool was run from such a location.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.execution
+    - attack.t1204.002
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection_img:
+        - Image|endswith: '\msiexec.exe'
+        - OriginalFileName: 'msiexec.exe'
+    selection_ext:
+        CommandLine|contains: '.msi'
+    selection_path:
+        CommandLine|contains:
+            - '\Desktop\'
+            - '\Downloads\'
+            - '\ProgramData\'
+    condition: all of selection_*
+    EventID: 1
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+falsepositives:
+    - Administrators or users legitimately installing software downloaded to these folders
+level: low
