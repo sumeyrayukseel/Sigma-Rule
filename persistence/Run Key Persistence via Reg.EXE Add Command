@@ -1,0 +1,31 @@
+title: Run Key Persistence via Reg.EXE Add Command
+status: experimental
+description: Detects reg.exe adding a value under a CurrentVersion\Run registry key, a common user-level persistence method. Observed in the EtherRAT intrusion where a Run key named AppResolver launched a portable Node.js runtime through conhost --headless.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.persistence
+    - attack.t1547.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith: '\reg.exe'
+        - OriginalFileName: 'reg.exe'
+    selection_cli:
+        CommandLine|contains|all:
+            - ' add '
+            - '\CurrentVersion\Run*'
+    condition: all of selection_*
+fields:
+    - ParentImage
+    - ParentCommandLine
+    - Image
+    - CommandLine
+    - User
+falsepositives:
+    - Legitimate installers and administrative scripts that register startup programs through reg.exe
+level: low
