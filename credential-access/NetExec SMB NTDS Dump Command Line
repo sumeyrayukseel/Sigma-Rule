@@ -1,0 +1,27 @@
+title: NetExec SMB NTDS Dump Command Line
+status: experimental
+description: Detects the NetExec (nxc) command line used to dump NTDS.dit credentials over SMB. Observed in the EtherRAT intrusion where the actor used NetExec for credential access against domain systems.
+references:
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.credential-access
+    - attack.t1003.003
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_cli:
+        CommandLine|contains|all:
+            - ' smb '
+            - '--ntds'
+    condition: selection_cli
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+falsepositives:
+    - Authorized penetration tests using NetExec
+level: high
