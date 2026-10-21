@@ -1,0 +1,32 @@
+title: Msiexec Spawning Cmd to Launch a Script File
+status: experimental
+description: Detects msiexec.exe spawning cmd.exe with a command line that starts a .cmd script. Observed in the EtherRAT intrusion where a malicious MSI masquerading as a Sysinternals tool launched a .cmd file in a minimized window, which then downloaded a portable Node.js runtime.
+    - https://thedfirreport.com/2026/05/11/flash-alert-etherrat-and-tuktuk-c2-end-in-the-gentleman-ransomware/
+author: Sümeyra Yüksel
+date: 2026/10/21
+tags:
+    - attack.execution
+    - attack.t1059.003
+logsource:
+    category: process_creation
+    product: windows
+    service: sysmon
+detection:
+    selection_parent:
+        ParentImage|endswith: '\msiexec.exe'
+    selection_img:
+        Image|endswith: '\cmd.exe'
+    selection_cli:
+        CommandLine|contains|all:
+            - 'start'
+            - '.cmd'
+    condition: all of selection_*
+    EventID: 1
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+falsepositives:
+    - Administrators or users legitimately installing software downloaded to these folders
+level: low
