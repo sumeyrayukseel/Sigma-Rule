@@ -11,6 +11,7 @@ tags:
 logsource:
     category: process_creation
     product: windows
+    service: sysmon
 detection:
     selection_img:
         - Image|endswith: '\reg.exe'
@@ -20,6 +21,7 @@ detection:
             - ' add '
             - '\CurrentVersion\Run*'
     condition: all of selection_*
+    EventID: 13
 fields:
     - ParentImage
     - ParentCommandLine
