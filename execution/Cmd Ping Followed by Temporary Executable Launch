@@ -1,0 +1,31 @@
+title: Cmd Ping Followed by Temporary Executable Launch
+status: experimental
+description: Detects cmd.exe executing a ping command followed by launching an executable from a user temporary directory, which may indicate network connectivity testing before payload execution.
+references:
+    - https://thedfirreport.com/
+author: Sümeyra Yüksel
+date: 2026/10/22
+tags:
+    - attack.execution
+    - attack.t1059.003
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith: '\cmd.exe'
+    selection_ping:
+        CommandLine|contains|all:
+            - 'ping'
+            - '8.8.8.8'
+    selection_temp:
+        CommandLine|contains|all:
+            - '\AppData\Local\Temp\'
+            - '.exe'
+    condition: all of selection_*
+fields:
+    - ParentImage
+    - Image
+    - CommandLine
+    - User
+level: medium
