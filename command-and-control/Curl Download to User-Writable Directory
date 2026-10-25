@@ -17,7 +17,9 @@ detection:
         - Image|endswith: '\curl.exe'
         - OriginalFileName: 'curl.exe'
     selection_url:
-        CommandLine|contains: 'http'
+        CommandLine|contains:
+            - 'http://'
+            - 'https://'
     selection_path:
         CommandLine|contains:
             - '\AppData\'
