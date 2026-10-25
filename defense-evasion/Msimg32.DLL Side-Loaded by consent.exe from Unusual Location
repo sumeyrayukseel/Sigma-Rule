@@ -1,0 +1,32 @@
+title: Msimg32.DLL Side-Loaded by consent.exe from Unusual Location
+status: experimental
+description: Detects consent.exe loading msimg32.dll from outside the Windows system directories. This is the DLL side-loading half of the BumbleBee technique that the consent.exe unusual-location rule detects from the process side.
+references:
+    - https://thedfirreport.com/2026/06/29/from-bing-search-to-ransomware-bumblebee-and-adaptixc2-deliver-akira-3/
+author: Sümeyra Yüksel
+date: 2026/10/25
+tags:
+    - attack.defense-evasion
+    - attack.t1574.002
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\consent.exe'
+        ImageLoaded|endswith: '\msimg32.dll'
+    filter_main_legit_path:
+        ImageLoaded|startswith:
+            - 'C:\Windows\System32\'
+            - 'C:\Windows\SysWOW64\'
+            - 'C:\Windows\WinSxS\'
+    condition: selection and not filter_main_legit_path
+fields:
+    - Image
+    - ImageLoaded
+    - Hashes
+    - Signed
+    - User
+falsepositives:
+    - Unlikely; verify the DLL path, signature and hash
+level: high
