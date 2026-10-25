@@ -15,6 +15,7 @@ logsource:
 detection:
     selection_img:
         Image|endswith: '\rundll32.exe'
+        OriginalFileName: 'RUNDLL32.EXE'
     selection_dll:
         CommandLine|contains: 'comsvcs.dll'
     selection_func:
@@ -28,6 +29,7 @@ detection:
     condition: all of selection_*
 fields:
     - User
+    - ParentImage
     - Image
     - CommandLine
 level: high
