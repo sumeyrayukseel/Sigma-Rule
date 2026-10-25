@@ -18,6 +18,8 @@ detection:
         - OriginalFileName: 'ssh.exe'
     selection_cli:
         CommandLine|contains: ' -R'
+    selection_cli_opt:
+        CommandLine|contains: 'RemoteForward'
     condition: all of selection_*
 fields:
     - Image
