@@ -12,11 +12,18 @@ logsource:
     category: process_creation
     product: windows
 detection:
+    selection_tool:
+        - Image|endswith:
+              - '\nxc.exe'
+              - '\netexec.exe'
+        - CommandLine|contains:
+              - 'nxc'
+              - 'netexec'
     selection_cli:
         CommandLine|contains|all:
             - ' smb '
             - '--ntds'
-    condition: selection_cli
+    condition: all of selection_*
 fields:
     - ParentImage
     - Image
