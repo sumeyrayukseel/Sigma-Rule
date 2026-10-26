@@ -1,5 +1,4 @@
 title: Renamed Windows Address Book (WAB.EXE) Execution
-id: 
 status: experimental
 description: Detects execution of a binary whose OriginalFileName is WAB.EXE but whose image name is not wab.exe. Attackers rename WAB.exe and inject shellcode into it; observed with AdaptixC2 delivered via a renamed copy (AdgNsy.exe).
 references:
@@ -7,7 +6,7 @@ references:
 author: Sümeyra Yüksel
 date: 2026/10/19
 tags:
-    - attack.defense-evasion
+    - attack.defense_evasion
     - attack.t1036.003
 logsource:
     category: process_creation
@@ -16,7 +15,9 @@ detection:
     selection:
         OriginalFileName: 'WAB.EXE'
     filter_main_legit_name:
-        Image|endswith: '\wab.exe'
+        Image|endswith:
+            - '\wab.exe'
+            - '\wabmig.exe'
     condition: selection and not filter_main_legit_name
 fields:
     - Image
@@ -25,5 +26,5 @@ fields:
     - ParentCommandLine
     - OriginalFileName
 falsepositives:
-    - Legitimate renamed copies of wab.exe are very rare; verify the file path and parent process
+    - Unknown
 level: high
