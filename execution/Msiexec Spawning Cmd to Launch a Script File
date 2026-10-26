@@ -16,10 +16,15 @@ detection:
         ParentImage|endswith: '\msiexec.exe'
     selection_img:
         Image|endswith: '\cmd.exe'
-    selection_cli:
-        CommandLine|contains|all:
-            - 'start'
+    selection_cli_start:
+        CommandLine|contains: 'start'
+    selection_cli_script:
+        CommandLine|contains:
             - '.cmd'
+            - '.bat'
+            - '.vbs'
+            - '.js'
+            - '.ps1'
     condition: all of selection_*
     EventID: 1
 fields:
