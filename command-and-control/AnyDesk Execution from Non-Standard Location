@@ -1,0 +1,25 @@
+title: AnyDesk Execution from Non-Standard Location
+status: experimental
+description: Detects AnyDesk running outside of Program Files, commonly portable or dropped by attackers
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+author: Sümeyra Yüksel
+date: 2026/10/20
+tags: 
+- attack.command_and_control
+- attack.t1219
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    - Image|endswith: '\AnyDesk.exe'
+    - OriginalFileName: 'AnyDesk.exe'
+  filter_main:
+    Image|startswith:
+      - 'C:\Program Files (x86)\AnyDesk\'
+      - 'C:\Program Files\AnyDesk\'
+  condition: selection and not filter_main
+falsepositives:
+  - Portable AnyDesk used by IT or help desk
+level: medium
