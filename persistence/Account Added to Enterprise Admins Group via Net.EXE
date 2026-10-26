@@ -27,6 +27,7 @@ detection:
             - ' enterprise admins '
             - ' /add'
             - ' /dom'
+            - ' user '
     condition: all of selection_*
 fields:
     - Image
