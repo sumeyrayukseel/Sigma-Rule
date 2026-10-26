@@ -1,0 +1,21 @@
+title: AnyDesk Installed as a Service
+description: Detects installation of an AnyDesk service via System event 7045
+tags: 
+    - attack.persistence
+    - attack.command_and_control
+    - attack.t1543.003
+    - attack.t1219
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    Provider_Name: 'Service Control Manager'
+    EventID: 7045
+  keywords:
+    - ServiceName|contains: 'AnyDesk'
+    - ImagePath|contains: 'AnyDesk'
+  condition: selection and keywords
+falsepositives:
+  - Authorized AnyDesk deployments
+level: medium
