@@ -13,12 +13,22 @@ logsource:
     product: windows
 detection:
     selection_img:
-        Image|endswith: '\netscan.exe'
+        - Image|endswith:
+              - '\netscan.exe'
+              - '\netscan64.exe'
+        - Company|contains: 'SoftPerfect'
     selection_path:
-        CommandLine|contains: 'C:\temp\netscan.exe'
+        Image|contains:
+            - '\Temp\'
+            - '\AppData\'
+            - '\Users\Public\'
     condition: all of selection_*
 fields:
     - Image
+    - ParentImage
     - CommandLine
+    - Company
     - User
-level: low
+falsepositives:
+    - Administrators running the scanner portably from a user-writable folder
+level: medium
