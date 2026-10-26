@@ -1,5 +1,10 @@
 title: AnyDesk Installed as a Service
+status: experimental
 description: Detects installation of an AnyDesk service via System event 7045
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+author: Sümeyra Yüksel
+date: 2026/10/26
 tags: 
     - attack.persistence
     - attack.command_and_control
