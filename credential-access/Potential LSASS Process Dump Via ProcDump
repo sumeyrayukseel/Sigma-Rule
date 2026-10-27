@@ -1,0 +1,33 @@
+title: Potential LSASS Process Dump Via ProcDump
+status: experimental
+description: Detects potential LSASS credential dumping through ProcDump-like command-line arguments.
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+    - https://learn.microsoft.com/en-us/sysinternals/downloads/procdump
+author: Sümeyra Yüksel
+date: 2026/10/27
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_image:
+        Image|endswith:
+            - '\procdump.exe'
+            - '\procdump64.exe'
+    selection_dump_flags:
+        CommandLine|contains:
+            - ' -ma '
+            - ' -mm '
+            - ' -mp '
+    selection_target:
+        CommandLine|contains:
+            - 'lsass'
+            - 'keyiso'
+            - 'samss'
+    condition: all of selection_*
+falsepositives:
+    - Authorized diagnostic or security testing activity
+level: high
