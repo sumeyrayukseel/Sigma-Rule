@@ -1,0 +1,25 @@
+title: Access to Windows Administrative Shares
+status: experimental
+description: Detects access to Windows administrative shares that may be associated with lateral movement.
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+    - https://attack.mitre.org/techniques/T1021/002/
+author: Sümeyra Yüksel
+date: 2026/10/27
+tags:
+    - attack.lateral-movement
+    - attack.t1021.002
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 5140
+        ShareName|contains:
+            - 'C$'
+            - 'ADMIN$'
+    condition: selection
+falsepositives:
+    - Legitimate remote administration
+    - Software deployment and endpoint management
+level: medium
