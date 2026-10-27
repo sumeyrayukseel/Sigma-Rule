@@ -1,0 +1,23 @@
+title: Remote Interactive Logon via RDP
+status: experimental
+description: Detects successful remote interactive logons that may indicate RDP-based lateral movement.
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+    - https://attack.mitre.org/techniques/T1021/001/
+author: Sümeyra Yüksel
+date: 2026/10/27
+tags:
+    - attack.lateral-movement
+    - attack.t1021.001
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4624
+        LogonType: 10
+    condition: selection
+falsepositives:
+    - Legitimate remote administration
+    - Authorized IT support sessions
+level: low
