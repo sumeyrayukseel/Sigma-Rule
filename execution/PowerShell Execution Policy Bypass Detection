@@ -1,0 +1,35 @@
+title: PowerShell Execution Policy Bypass Detection
+description: Detects suspicious PowerShell execution policy bypass and hidden execution indicators in script block logs.
+author: Sümeyra Yüksel
+status: experimental
+references:
+    - https://www.myeventlog.com/search/show/980
+    - https://nsfocusglobal.com/Attack-and-Defense-Around-PowerShell-Event-Logging
+tags:
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    product: windows
+    category: ps_script
+    definition: PowerShell Script Block Logging must be enabled
+detection:
+    selection_event:
+        EventID: 4104
+    selection_bypass:
+        ScriptBlockText|contains:
+            - 'bypass'
+            - '-ep'
+            - '-executionpolicy'
+            - '-exec'
+            - '-nop'
+            - '-noprofile'
+            - '-windowstyle hidden'
+            - '-w hidden'
+    condition: selection_event and selection_bypass
+fields:
+    - Computer
+    - ScriptBlockText
+    - ScriptBlockId
+falsepositives:
+    - Legitimate administrative scripts using similar parameters
+level: high
