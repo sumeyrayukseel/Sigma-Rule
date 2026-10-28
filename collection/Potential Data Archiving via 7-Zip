@@ -1,0 +1,28 @@
+title: Potential Data Archiving via 7-Zip
+status: experimental
+description: Detects potential data collection and archiving activity through 7-Zip command-line usage.
+references:
+    - https://thedfirreport.com/2022/09/26/bumblebee-round-two/
+    - https://attack.mitre.org/techniques/T1560/001/
+author: Sümeyra Yüksel
+date: 2026/10/27
+tags:
+    - attack.collection
+    - attack.t1560.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_image:
+        Image|endswith:
+            - '\7z.exe'
+            - '\7zG.exe'
+            - '\7za.exe'
+    selection_archive_command:
+        CommandLine|contains:
+            - ' a '
+    condition: all of selection_*
+falsepositives:
+    - Legitimate file compression and backup operations
+    - Authorized IT administration
+level: medium
